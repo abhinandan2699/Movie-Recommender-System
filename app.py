@@ -2,11 +2,35 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
+import gdown
 
 # Load data
 movies_dict = pickle.load(open('movies_dict.pkl', 'rb'))
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+# similarity = pickle.load(open('similarity.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
+
+
+
+# Google Drive file ID
+file_id = "1Da0ekXxQekWXuayklsClMrHKj7lA_YtX"
+
+# Direct download URL using gdown
+url = f"https://drive.google.com/uc?id={file_id}"
+output_file = "similarity.pkl"
+
+# Download the file
+gdown.download(url, output_file, quiet=False)
+
+# Load the file using pickle
+try:
+    with open("similarity.pkl", "rb") as f:
+        similarity = pickle.load(f)
+    print("File loaded successfully.")
+    print(similarity)  # Print the content to verify
+except Exception as e:
+    print(f"Error loading the file: {e}")
+
+
 
 # Custom CSS for scaled-down pop-up effect
 st.markdown(
