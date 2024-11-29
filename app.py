@@ -2,113 +2,21 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
-import gdown
 
 # Load data
 movies_dict = pickle.load(open('movies_dict.pkl', 'rb'))
-# similarity = pickle.load(open('similarity.pkl', 'rb'))
+similarity = pickle.load(open('similarity.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
 
+# Load external CSS file
+def load_css(file_path):
+    with open(file_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+# Apply the CSS
+load_css("style.css")
 
-# Google Drive file ID
-file_id = "1Da0ekXxQekWXuayklsClMrHKj7lA_YtX"
-
-# Direct download URL using gdown
-url = f"https://drive.google.com/uc?id={file_id}"
-output_file = "similarity.pkl"
-
-# Download the file
-gdown.download(url, output_file, quiet=False)
-
-# Load the file using pickle
-try:
-    with open("similarity.pkl", "rb") as f:
-        similarity = pickle.load(f)
-    print("File loaded successfully.")
-    print(similarity)  # Print the content to verify
-except Exception as e:
-    print(f"Error loading the file: {e}")
-
-
-
-# Custom CSS for scaled-down pop-up effect
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-image: url("https://miro.medium.com/v2/resize:fit:1400/format:webp/1*qR08Jxq0IHdvFtBsUhCe3Q.jpeg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-    .movie-card {
-        border: 1px solid #333;
-        border-radius: 15px;
-        background-color: #ffffff;
-        margin: 10px;
-        padding: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        height: 350px;
-        width: 150px;
-        overflow: hidden;
-        position: relative;
-        transition: transform 0.3s, box-shadow 0.3s;
-        align-items: center;
-    }
-    .movie-card img {
-        width: 100%;
-        height: 75%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-    .movie-title {
-        font-size: 14px;
-        font-weight: bold;
-        margin-top: 10px;
-        text-align: center;
-        color: #000000;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1000;
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    }
-    .popup img {
-        width: 300px;
-        height: auto;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-    .popup .close-btn {
-        margin-top: 10px;
-        padding: 10px 20px;
-        background-color: #f44336;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .popup:target {
-        display: block;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
+# Title and UI
 st.title('🍿 Movie Recommender System')
 st.markdown("### Get tailored movie recommendations based on your favorites! 🎬")
 
@@ -120,12 +28,12 @@ selected_movie_name = st.selectbox(
 # Function to fetch poster from TMDB API
 def fetch_poster(movie_id):
     response = requests.get(
-        "https://api.themoviedb.org/3/movie/{}?api_key=6d55c4781af5599db440d30d82ee47f0".format(movie_id))
+        f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=6d55c4781af5599db440d30d82ee47f0"
+    )
     data = response.json()
     if 'poster_path' in data and data['poster_path']:
-        return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
+        return f"https://image.tmdb.org/t/p/w500/{data['poster_path']}"
     return "https://via.placeholder.com/500x750?text=No+Image+Available"
-
 
 # Recommendation logic
 def recommend(movie):
@@ -142,14 +50,13 @@ def recommend(movie):
 
     return recommended_movies, recommended_movies_posters
 
-
-if st.button('Get Recommendations', key='recommend-btn', help="Click to get movie recommendations"):
-    # Display the loading spinner
+# Button to get recommendations
+if st.button('Get Recommendations', key='recommend-btn'):
+    # Display spinner during processing
     with st.spinner('Fetching movie recommendations...'):
-        # Recommendation logic
         names, posters = recommend(selected_movie_name)
 
-    # Display movie recommendations in styled columns with horizontal padding
+    # Display movie recommendations
     cols = st.columns(5, gap="large")
     for i, col in enumerate(cols):
         with col:
@@ -160,7 +67,7 @@ if st.button('Get Recommendations', key='recommend-btn', help="Click to get movi
                     <p class="movie-title">{names[i]}</p>
                     <div>
                         <a href="#popup-{i}">
-                            <button style="margin-left: 25%; padding: 5px 10px; background-color: #6200ea; color: white; border: none; border-radius: 5px; cursor: pointer;">View</button>
+                            <button class="view-button">View</button>
                         </a>
                     </div>
                 </div>
