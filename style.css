@@ -75,9 +75,9 @@
 }
 
 .view-button {
-    margin-left: 25%;
+    margin-left: 30%;
     padding: 5px 10px;
-    background-color: #6200ea;
+    background-color: rgb(9, 171, 59);
     color: white;
     border: none;
     border-radius: 5px;
