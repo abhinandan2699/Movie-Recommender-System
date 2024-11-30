@@ -16,9 +16,9 @@ def load_css(file_path):
 # Apply the CSS
 load_css("style.css")
 
-# Title and UI
-st.title('🍿 Movie Recommender System')
-st.markdown("### Get tailored movie recommendations based on your favorites! 🎬")
+# Title
+st.markdown('<h1 class="custom-title">🍿 Movie Recommender System</h1>', unsafe_allow_html=True)
+st.markdown('<h3 class="custom-title">Get tailored movie recommendations based on your favorites! 🎬</h3>', unsafe_allow_html=True)
 
 selected_movie_name = st.selectbox(
     'Select a movie to get recommendations:',

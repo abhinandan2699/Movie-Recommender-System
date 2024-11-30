@@ -83,3 +83,12 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.custom-title {
+    color: white;
+}
+
+/* CSS for the selectbox label */
+div[data-testid="stSelectbox"] label {
+    color: white;
+}
