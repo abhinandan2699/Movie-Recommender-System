@@ -43,18 +43,20 @@ def recommend(movie):
 
     recommended_movies = []
     recommended_movies_posters = []
+    recommended_movies_overview = []
     for i in movies_list:
         movie_id = i[0]
         recommended_movies.append(movies.iloc[i[0]].title)
         recommended_movies_posters.append(fetch_poster(movies.iloc[i[0]].movie_id))
+        recommended_movies_overview.append(movies.iloc[i[0]].original_overview)
 
-    return recommended_movies, recommended_movies_posters
+    return recommended_movies, recommended_movies_posters, recommended_movies_overview
 
 # Button to get recommendations
 if st.button('Get Recommendations', key='recommend-btn'):
     # Display spinner during processing
     with st.spinner('Fetching movie recommendations...'):
-        names, posters = recommend(selected_movie_name)
+        names, posters, overview = recommend(selected_movie_name)
 
     # Display movie recommendations
     cols = st.columns(5, gap="large")
@@ -74,6 +76,8 @@ if st.button('Get Recommendations', key='recommend-btn'):
                 <div id="popup-{i}" class="popup">
                     <img src="{posters[i]}" alt="{names[i]}">
                     <p style="font-size: 20px; font-weight: bold; color: black;">{names[i]}</p>
+                    <p class="movie-title">Rating: 6/10</p>
+                    <p style="font-size:16px; color:gray;">{overview[i]}.</p>
                     <a href="#">
                         <button class="close-btn">Close</button>
                     </a>
