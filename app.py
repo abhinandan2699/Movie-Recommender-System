@@ -75,14 +75,14 @@ if st.button('Get Recommendations', key='recommend-btn'):
                         </a>
                     </div>
                 </div>
-                <div id="popup-{i}" class="popup">
+                <div id="popup-{i}" class="popup" id="movie-popup">
+                    <a href="#">
+                        <button class="close-btn-top-right" onclick="document.getElementById('movie-popup').style.display='none'">&times;</button>
+                    </a>
                     <img src="{posters[i]}" alt="{names[i]}">
                     <p style="font-size: 20px; font-weight: bold; color: black;">{names[i]}</p>
                     <p class="movie-title">Rating: {ratings[i]}/10</p>
                     <p style="font-size:16px; color:gray;">{overviews[i]}.</p>
-                    <a href="#">
-                        <button class="close-btn">Close</button>
-                    </a>
                 </div>
                 """,
                 unsafe_allow_html=True
